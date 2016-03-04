@@ -7896,13 +7896,24 @@
                         // try {
                         //     me._responseJson = xhr.exec('getResponseAsJson');
                         // } catch ( error ) {
-                            
-                        p = window.JSON && window.JSON.parse || function( s ) {
+                        
+                        //IE8下报语法错误问题，修改源码如下：
+                      /*  p = window.JSON && window.JSON.parse || function( s ) {
                             try {
                                 return new Function('return ' + s).call();
                             } catch ( err ) {
                                 return {};
                             }
+                        };*/
+                        p = function (s) {
+                        	var parse = window.JSON && window.JSON.parse || function (s) {
+                        		return new Function('return ' + s).call();
+                        	};
+                        	try {
+                        		return parse(s);
+                        	} catch (err) {
+                        		return {};
+                        	}
                         };
                         me._responseJson  = me._response ? p(me._response) : {};
                             
